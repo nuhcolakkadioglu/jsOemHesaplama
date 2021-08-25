@@ -1,2 +1,2 @@
 # jsOemHesaplama
-javascript ile oem parça hesaplama 
+javascript ile oem parça hesaplama.
