@@ -28,7 +28,7 @@ const ProductController = (function () {
         getData: function () {
             return data;
         },
-        getCurrentProduct : function(){
+        getCurrentProduct: function () {
             return data.selectedProduct;
         }
         ,
@@ -64,8 +64,22 @@ const ProductController = (function () {
             })
             return product;
         },
-        setCurrentProduct: function(product){
+        setCurrentProduct: function (product) {
             data.selectedProduct = product;
+        },
+
+        updateProduct: function (name, price) {
+            let product = null;
+
+            data.products.forEach(item => {
+                if (item.id == data.selectedProduct.id) {
+                    item.name = name;
+                    item.price = parseFloat(price);
+                    product = item;
+                }
+            });
+
+            return product;
         }
     }
     createProductList
@@ -82,7 +96,12 @@ const UIController = (function () {
         productPrice: '#ProductPrice',
         productCart: '#productCart',
         totalTl: '#total-tl',
-        totalUsd: '#total-usd'
+        totalUsd: '#total-usd',
+        updateBtn: '.updateBtn',
+        deleteBtn: '.deleteBtn',
+        cancelBtn: '.cancelBtn',
+        productListItems :'#item-list tr'
+
     }
 
     return {
@@ -135,6 +154,15 @@ const UIController = (function () {
             document.querySelector(selectors.productPrice).value = '';
         },
 
+        clearWarnings :function(){
+          const items = document.querySelectorAll(selectors.productListItems);
+          items.forEach(item=>{
+                if(item.classList.contains('bg-warning')){
+                    item.classList.remove('bg-warning');
+                }
+          });
+        },
+
         hideCart: function () {
             document.querySelector(selectors.productCart).style.display = 'none';
         },
@@ -144,11 +172,43 @@ const UIController = (function () {
             document.querySelector(selectors.totalTl).textContent = total * 8.4;
 
         },
-        addProductToForm:function(){
+        addProductToForm: function () {
             const selectedProduct = ProductController.getCurrentProduct();
             document.querySelector(selectors.productName).value = selectedProduct.name;
             document.querySelector(selectors.productPrice).value = selectedProduct.price;
+        },
+        addingState: function (item) {
+            
+            UIController.clearWarnings();
+
+            UIController.clearInput();
+            document.querySelector(selectors.addButton).style.display = 'inline';
+            document.querySelector(selectors.updateBtn).style.display = 'none';
+            document.querySelector(selectors.deleteBtn).style.display = 'none';
+            document.querySelector(selectors.cancelBtn).style.display = 'none';
+        },
+        editState: function (tr) {
+            
+            document.querySelector(selectors.addButton).style.display = 'none';
+            document.querySelector(selectors.updateBtn).style.display = 'inline';
+            document.querySelector(selectors.deleteBtn).style.display = 'inline';
+            document.querySelector(selectors.cancelBtn).style.display = 'inline';
+        },
+        updateProduct:function(prd){
+            let updatedItem = null;
+
+            let items = document.querySelectorAll(selectors.productListItems);
+            items.forEach(item=>{
+                if(item.classList.contains('bg-warning')){
+                   item.children[1].textContent = prd.name;
+                   item.children[2].textContent = prd.price+' $';
+                   updatedItem = item;
+                }
+            });
+
+            return updatedItem;
         }
+
     }
 
 })();
@@ -157,15 +217,31 @@ const UIController = (function () {
 //App Controller
 const App = (function (ProductCtrl, UICtrl) {
 
-    const UISelectors = UIController.getSelectors();
+    const UISelectors = UICtrl.getSelectors();
     const loadEventListeners = function () {
         //ürün ekleme
         document.querySelector(UISelectors.addButton).addEventListener('click', productAddSubmit);
 
-        //düzenleme 
-        document.querySelector(UISelectors.productList).addEventListener('click', productEditSubmit);
+        //düzenleme click
+        document.querySelector(UISelectors.productList).addEventListener('click', productEditClick);
+
+        //düzenleme submit 
+        document.querySelector(UISelectors.updateBtn).addEventListener('click', editProductSubmit);
+
+        //iptal butonu click
+        document.querySelector(UISelectors.cancelBtn).addEventListener('click', canceProductClick);
+
 
     };
+
+    //iptal buton click fonksiyon
+
+    const canceProductClick = function(e){
+        UICtrl.addingState();
+        UICtrl.clearWarnings();
+
+        e.preventDefault();
+    }
 
     //ürün ekleme submit
     const productAddSubmit = function (e) {
@@ -195,8 +271,8 @@ const App = (function (ProductCtrl, UICtrl) {
         e.preventDefault();
     };
 
-    //ürün düzenleme submit
-    const productEditSubmit = function (e) {
+    //ürün düzenleme click
+    const productEditClick = function (e) {
 
         if (e.target.classList.contains('edit-product')) {
             const id = e.target.parentNode.previousElementSibling.previousElementSibling.previousElementSibling.textContent;
@@ -205,16 +281,38 @@ const App = (function (ProductCtrl, UICtrl) {
 
             //ara yüze ekleme
             UICtrl.addProductToForm();
+
+            UICtrl.editState(e.target.parentNode.parentNode);
         }
 
 
         e.preventDefault();
     };
 
+    //ürün düzenleme submit 
+    editProductSubmit = function (e) {
+
+        const productName = document.querySelector(UISelectors.productName).value;
+        const productPrice = document.querySelector(UISelectors.productPrice).value;
+        if (productName !== '' && productPrice !== '') {
+            //güncelle
+            const updatedProduct = ProductCtrl.updateProduct(productName, productPrice);
+
+            //arayüzde güncelle
+           let item = UICtrl.updateProduct(updatedProduct);
+           const total = ProductCtrl.getTotal();
+           UICtrl.showTotal(total);
+           UICtrl.addingState();
+           
+        }
+        e.preventDefault();
+    }
+
 
     return {
         init: function () {
             console.log('proje start');
+            UICtrl.addingState();
             const product = ProductCtrl.getProducts();
             if (product.length == 0) {
                 UICtrl.hideCart();
