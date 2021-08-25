@@ -26,14 +26,14 @@
                 <form>
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <input type="text" class="form-control" id="name" placeholder="Adı">
+                            <input type="text" class="form-control" id="ProductName" placeholder="Adı">
                         </div>
                         <div class="form-group col-md-6">
-                            <input type="number" class="form-control" id="price" placeholder="Fiyatı">
+                            <input type="number" class="form-control" id="ProductPrice" placeholder="Fiyatı">
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-sm">
+                    <button type="submit" class="btn btn-primary btn-sm addBtn">
                         <i class="fas fa-plus"></i>Ekle
                     </button>
 
@@ -54,35 +54,11 @@
             </div>
         </div>
 
-        <div class="card mt-3">
+        <div id="productCart" class="card mt-3">
             <table class="table table-striped table-dark">
                 <tbody id="item-list">
-                    <tr>
-                        <td>1</td>
-                        <td>Monitör</td>
-                        <td>100 $</td>
-                        <td class="text-right"> <button type="submit" class="btn btn-warning btn-sm">
-                                <i class="fas fa-edit"></i>
-                            </button></td>
-                    </tr>
 
-                    <tr>
-                        <td>1</td>
-                        <td>Klavye</td>
-                        <td>25 $</td>
-                        <td class="text-right"> <button type="submit" class="btn btn-warning btn-sm">
-                                <i class="fas fa-edit"></i>
-                            </button></td>
-                    </tr>
-
-                    <tr>
-                        <td>1</td>
-                        <td>Anakart</td>
-                        <td>89 $</td>
-                        <td class="text-right"> <button type="submit" class="btn btn-warning btn-sm">
-                                <i class="fas fa-edit"></i>
-                            </button></td>
-                    </tr>
+                  
 
                 </tbody>
             </table>
