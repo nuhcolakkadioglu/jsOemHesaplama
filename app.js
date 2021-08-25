@@ -28,6 +28,10 @@ const ProductController = (function () {
         getData: function () {
             return data;
         },
+        getCurrentProduct : function(){
+            return data.selectedProduct;
+        }
+        ,
         addProduct: function (name, price) {
             let id;
             if (data.products.length > 0) {
@@ -48,6 +52,20 @@ const ProductController = (function () {
             });
             data.totalPrice = total;
             return data.totalPrice;
+
+        },
+
+        getProductById: function (id) {
+            let product = null;
+            data.products.forEach(item => {
+                if (item.id == id) {
+                    product = item;
+                }
+            })
+            return product;
+        },
+        setCurrentProduct: function(product){
+            data.selectedProduct = product;
         }
     }
     createProductList
@@ -78,9 +96,10 @@ const UIController = (function () {
                 <td>${item.name}</td>
                 <td>${item.price}</td>
                 <td class="text-right">
-                 <button type="submit" class="btn btn-warning btn-sm">
-                        <i class="fas fa-edit"></i>
-                 </button></td>
+                 
+                        <i class="fas fa-edit edit-product"></i>
+                        </td>
+                 
             </tr>`;
 
             })
@@ -101,9 +120,9 @@ const UIController = (function () {
            <td>${item.name}</td>
            <td>${item.price}</td>
            <td class="text-right">
-            <button type="submit" class="btn btn-warning btn-sm">
-                   <i class="fas fa-edit"></i>
-            </button></td>
+           
+                   <i class="fas fa-edit edit-product"></i>
+            </td>
        </tr>
             
            `;
@@ -120,10 +139,15 @@ const UIController = (function () {
             document.querySelector(selectors.productCart).style.display = 'none';
         },
 
-        showTotal:function(total){
-            document.querySelector(selectors.totalUsd).textContent=total;
-            document.querySelector(selectors.totalTl).textContent=total*8.4;
+        showTotal: function (total) {
+            document.querySelector(selectors.totalUsd).textContent = total;
+            document.querySelector(selectors.totalTl).textContent = total * 8.4;
 
+        },
+        addProductToForm:function(){
+            const selectedProduct = ProductController.getCurrentProduct();
+            document.querySelector(selectors.productName).value = selectedProduct.name;
+            document.querySelector(selectors.productPrice).value = selectedProduct.price;
         }
     }
 
@@ -137,7 +161,13 @@ const App = (function (ProductCtrl, UICtrl) {
     const loadEventListeners = function () {
         //ürün ekleme
         document.querySelector(UISelectors.addButton).addEventListener('click', productAddSubmit);
+
+        //düzenleme 
+        document.querySelector(UISelectors.productList).addEventListener('click', productEditSubmit);
+
     };
+
+    //ürün ekleme submit
     const productAddSubmit = function (e) {
 
         const productName = document.querySelector(UISelectors.productName).value;
@@ -161,6 +191,22 @@ const App = (function (ProductCtrl, UICtrl) {
         } else {
 
         }
+
+        e.preventDefault();
+    };
+
+    //ürün düzenleme submit
+    const productEditSubmit = function (e) {
+
+        if (e.target.classList.contains('edit-product')) {
+            const id = e.target.parentNode.previousElementSibling.previousElementSibling.previousElementSibling.textContent;
+            const product = ProductCtrl.getProductById(id);
+            ProductCtrl.setCurrentProduct(product);
+
+            //ara yüze ekleme
+            UICtrl.addProductToForm();
+        }
+
 
         e.preventDefault();
     };
