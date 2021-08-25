@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="tr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Oem Parça Hesaplama</title>
+</head>
+
+<body>
+
+    <nav class="nav navbar-dark bg-danger">
+        <div class="container">
+            <a href="#" class="navbar-brand">OEM Parça Hesaplama</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card mt-3">
+            <div class="card-body">
+                <form>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <input type="text" class="form-control" id="name" placeholder="Adı">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <input type="number" class="form-control" id="price" placeholder="Fiyatı">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i>Ekle
+                    </button>
+
+                    <button type="submit" class="btn btn-warning btn-sm">
+                        <i class="fas fa-edit"></i>Düzenle
+                    </button>
+
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="fas fa-times"></i>Sil
+                    </button>
+
+                    <button type="submit" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-arrow-circle-left"></i>İptal
+                    </button>
+
+
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <table class="table table-striped table-dark">
+                <tbody id="item-list">
+                    <tr>
+                        <td>1</td>
+                        <td>Monitör</td>
+                        <td>100 $</td>
+                        <td class="text-right"> <button type="submit" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i>
+                            </button></td>
+                    </tr>
+
+                    <tr>
+                        <td>1</td>
+                        <td>Monitör</td>
+                        <td>100 $</td>
+                        <td class="text-right"> <button type="submit" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i>
+                            </button></td>
+                    </tr>
+
+                    <tr>
+                        <td>1</td>
+                        <td>Monitör</td>
+                        <td>100 $</td>
+                        <td class="text-right"> <button type="submit" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i>
+                            </button></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-footer text-right">
+                <p>Toplam(TL)</p> <strong>300 TL</strong>
+                <p>Toplam($)</p> <strong>50 $</strong>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
