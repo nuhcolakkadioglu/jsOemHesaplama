@@ -1,67 +1,77 @@
 //Storage Controller
-const StorageController = (function(){
+const StorageController = (function () {
 
 })();
 
 //Product Controller
-const ProductController=(function(){
+const ProductController = (function () {
 
     //private alanlar
-    const Product = function(id,name,price){
+    const Product = function (id, name, price) {
         this.id = id;
         this.name = name;
-        this.price  = price;
+        this.price = price;
     }
 
-    const data ={
-        products:[],
-        selectedProduct :null,
-        totalPrice :0
+    const data = {
+        products: [],
+        selectedProduct: null,
+        totalPrice: 0
     }
 
     //public alan
     return {
-        getProducts:function(){
+        getProducts: function () {
             return data.products;
         },
 
-        getData : function(){
+        getData: function () {
             return data;
         },
-        addProduct:function(name,price){
+        addProduct: function (name, price) {
             let id;
-            if(data.products.length>0){
-                id = data.products[data.products.length-1].id+1;
-               
-            }else{
-                id = 1; 
+            if (data.products.length > 0) {
+                id = data.products[data.products.length - 1].id + 1;
+
+            } else {
+                id = 1;
             }
 
-            const newProduct = new Product(id,name,parseFloat(price));
+            const newProduct = new Product(id, name, parseFloat(price));
             data.products.push(newProduct);
             return newProduct;
+        },
+        getTotal: function () {
+            let total = 0;
+            data.products.forEach(item => {
+                total += item.price;
+            });
+            data.totalPrice = total;
+            return data.totalPrice;
         }
     }
-     createProductList   
+    createProductList
 
 })();
 
 //UI Controller
-const UIController = (function(){
+const UIController = (function () {
 
-    const selectors={
-        productList :'#item-list',
+    const selectors = {
+        productList: '#item-list',
         addButton: '.addBtn',
-        productName :'#ProductName',
+        productName: '#ProductName',
         productPrice: '#ProductPrice',
-        productCart :'#productCart'
+        productCart: '#productCart',
+        totalTl: '#total-tl',
+        totalUsd: '#total-usd'
     }
 
     return {
-        createProductList :function(products){
-            let html ='';
+        createProductList: function (products) {
+            let html = '';
 
-            products.forEach(item=>{
+            products.forEach(item => {
                 html += `
                 <tr>
                 <td>${item.id}</td>
@@ -74,18 +84,18 @@ const UIController = (function(){
             </tr>`;
 
             })
-           
 
-           document.querySelector(selectors.productList).innerHTML = html;
+
+            document.querySelector(selectors.productList).innerHTML = html;
         },
 
-        getSelectors :function(){
+        getSelectors: function () {
             return selectors;
         },
 
-        addProduct:function(item){
-            document.querySelector(selectors.productCart).style.display='block';
-           var item =`
+        addProduct: function (item) {
+            document.querySelector(selectors.productCart).style.display = 'block';
+            var item = `
            <tr>
            <td>${item.id}</td>
            <td>${item.name}</td>
@@ -96,18 +106,24 @@ const UIController = (function(){
             </button></td>
        </tr>
             
-           `; 
-           document.querySelector(selectors.productList).innerHTML += item;
+           `;
+            document.querySelector(selectors.productList).innerHTML += item;
 
         },
 
-        clearInput : function(){
-            document.querySelector(selectors.productName).value ='';
-            document.querySelector(selectors.productPrice).value ='';
+        clearInput: function () {
+            document.querySelector(selectors.productName).value = '';
+            document.querySelector(selectors.productPrice).value = '';
         },
 
-        hideCart : function(){
-            document.querySelector(selectors.productCart).style.display='none';
+        hideCart: function () {
+            document.querySelector(selectors.productCart).style.display = 'none';
+        },
+
+        showTotal:function(total){
+            document.querySelector(selectors.totalUsd).textContent=total;
+            document.querySelector(selectors.totalTl).textContent=total*8.4;
+
         }
     }
 
@@ -115,51 +131,59 @@ const UIController = (function(){
 
 
 //App Controller
-const App = (function(ProductCtrl,UICtrl){
+const App = (function (ProductCtrl, UICtrl) {
 
     const UISelectors = UIController.getSelectors();
-    const loadEventListeners = function(){
+    const loadEventListeners = function () {
         //ürün ekleme
-        document.querySelector(UISelectors.addButton).addEventListener('click',productAddSubmit);
+        document.querySelector(UISelectors.addButton).addEventListener('click', productAddSubmit);
     };
-    const productAddSubmit = function(e){
-            
+    const productAddSubmit = function (e) {
+
         const productName = document.querySelector(UISelectors.productName).value;
         const productPrice = document.querySelector(UISelectors.productPrice).value;
 
-        if(productName!=='' && productPrice !==''){
+        if (productName !== '' && productPrice !== '') {
             //ürün ekleme
-          const newProduct =  ProductCtrl.addProduct(productName,productPrice);
-         UIController.addProduct(newProduct);
-         UIController.clearInput();
-         
+            const newProduct = ProductCtrl.addProduct(productName, productPrice);
+            UIController.addProduct(newProduct);
 
-        }else{
+            //toplam ürün fiyatı
+
+            const total = ProductCtrl.getTotal();
+            UICtrl.showTotal(total);
+
+
+            //inputları temizle
+            UIController.clearInput();
+
+
+        } else {
 
         }
-        
+
         e.preventDefault();
     };
 
 
     return {
-        init:function(){
+        init: function () {
             console.log('proje start');
             const product = ProductCtrl.getProducts();
-            if(product.length==0){
+            if (product.length == 0) {
                 UICtrl.hideCart();
-            }else{
+            } else {
                 UICtrl.createProductList(product);
-           
+
             }
 
             loadEventListeners();
 
-           
+
         }
     }
 
 
-})(ProductController,UIController);
+})(ProductController, UIController);
 
 App.init();
